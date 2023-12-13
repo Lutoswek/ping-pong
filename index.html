@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="400" height="500"> </canvas>
+
+<script>
+
+var canvas = document.getElementById("canvas") // вызвать от ид
+var ctx = canvas.getContext("2d") // для отрисвоки
+
+var okLeft = false // переменные для отслеживаия нажатия влево и вправо
+var okRight = false 
+
+var drawRect = function () {
+  // для отрисовки жлткой прямоуголльой области 
+
+  ctx.fillStyle = "khaki" // цвет
+  ctx.fillRect(0, 0, 400, 500)//заливка
+  
+}
+
+//nothing new
+var circle = function ( x, y ) {
+// для отрисвоки шарика 
+
+
+
+ctx.fillStyle = "brown"
+
+
+ctx.beginPath() ;// рисуем отрисвоку дуги 
+ctx.arc (x, y, 10, 0, 6.28, false) // сама отрисовка 
+ctx.fill()
+
+}
+
+
+var stop = function () {
+  cancelAnimationFrame (myReq)
+  ctx.font = "60px Arial"
+  ctx.fillStyle = "red"
+  ctx.fillText ("Game over", 40, 200)
+
+  stop = true
+
+}
+
+
+class Platform{ 
+constructor(x, y) {
+  this.x = x
+  this.y = y
+}
+
+drawPlatform() {
+if (okLeft === true && this.x > 0 ) {this.x -=5}
+if (okRight === true && this.x < 300 ) {this.x +=5}
+
+  ctx.fillStyle = "teal"// ме_тод цвет
+  ctx.fillRect (this.x, this.y, 100, 20)         // метод заливка
+}
+}
+
+var myPlatf = new Platform (150, 480) // класс платформа 
+
+class Ball {
+  constructor(x, y) {
+  this.x = x
+  this.y = y
+}
+
+addX = 2
+addY = -3
+
+drawBall () {
+  circle(this.x, this.y)
+
+
+this.x += this.addX 
+this.y += this.addY
+
+if (this.x + 10  > 400) {
+  this.addX = -this.addX
+}
+
+if (this.x - 10  < 0) {
+  this.addX = -this.addX
+}
+
+if (this.y - 10 < 0) {
+  this.addY = -this.addY
+}
+
+if (this.y + 10 === 480 && this.x + 10 > myPlatf.x && this.x - 10 < myPlatf.x + 100) {
+  this.addY = -this.addY
+}  
+
+if (this.y - 10 > 500) {
+  stop ()
+}
+
+}
+  
+
+
+}
+
+var myBall = new Ball (200, 470)
+
+var render = function () {
+  // основная функция для отрисовки анимации
+if (stop === true) {return}
+
+  drawRect()//вызываем функцию
+  myPlatf.drawPlatform()
+myBall.drawBall()
+
+  myReq = requestAnimationFrame (render)/// цикл
+}
+render()
+
+addEventListener ("keydown", function(event) {
+  var newDirect = event.keyCode
+
+  if (newDirect === 37) {
+    okLeft = true
+  }
+  if (newDirect === 39) {
+    okRight = true
+  }
+})
+
+
+addEventListener ("keyup", function(event) {
+  var newDirect = event.keyCode
+
+  if (newDirect === 37) {
+    okLeft = false
+  }
+  if (newDirect === 39) {
+    okRight = false
+  }
+})
+</script>
+
+</body>
+</html>
